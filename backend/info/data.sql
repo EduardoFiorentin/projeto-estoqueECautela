@@ -1,3 +1,4 @@
+-- Active: 1696287870100@@127.0.0.1@3306@storage_loan
 CREATE DATABASE IF NOT EXISTS storage_loan;
 USE storage_loan;
 

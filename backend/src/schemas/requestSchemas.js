@@ -153,9 +153,69 @@ const UPDATE_LOAN = {
     }
 }
 
+// {
+//     "name": "Estacas de papel",
+//     "description": "Estacas feitas de papel",
+//     "category": "11",
+//     "qtd": 12
+// }
+
+const CREATE_STORAGE = {
+    name: {
+        type: 'string',
+        max: 50,
+        min: 1,
+        required: true
+    },
+    description: {
+        type: 'string',
+        max: 255,
+        min: 1,
+        required: false
+    },
+    category: {
+        type: 'string',
+        max: 1,
+        min: 1, 
+        required: true,
+        values: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+    },
+    qtd: {
+        type: 'number',
+        required: true
+    }
+}
+const UPDATE_STORAGE = {
+    name: {
+        type: 'string',
+        max: 50,
+        min: 1,
+        required: false
+    },
+    description: {
+        type: 'string',
+        max: 255,
+        min: 1,
+        required: false
+    },
+    category: {
+        type: 'string',
+        max: 1,
+        min: 1, 
+        required: false,
+        values: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
+    },
+    qtd: {
+        type: 'number',
+        required: false
+    }
+}
+
 module.exports = {
     POST_REGISTER, 
     POST_LOGIN,
     CREATE_LOAN,
-    UPDATE_LOAN
+    UPDATE_LOAN,
+    CREATE_STORAGE,
+    UPDATE_STORAGE
 }

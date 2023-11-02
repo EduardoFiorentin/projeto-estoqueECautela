@@ -3,6 +3,7 @@ const express = require('express')
 const userMiddlewares = require('./middlewares/usersMiddleware')
 const permissionMiddleware = require('./middlewares/permissionMiddleware')
 const loanMiddlewares = require('./middlewares/loanMiddlewares')
+const storageMiddleware = require('./middlewares/storageMiddlewares')
 
 const userController = require('./controllers/usersController')
 const storageController = require('./controllers/storageController')
@@ -32,10 +33,12 @@ router.get('/storage/:id',
     )
 router.post('/storage',
     permissionMiddleware.access(2), 
+    storageMiddleware.createMiddleware,
     storageController.createItem
     )
 router.put('/storage/:id',
     permissionMiddleware.access(2), 
+    storageMiddleware.updateMiddleware,
     storageController.updateItem
     )
 router.delete('/storage/:id',

@@ -5,7 +5,7 @@ import { loanState } from "../../atoms/loanState"
 import api from "../../connection/api"
 import { useEffect } from "react"
 
-export const Loan = () => {
+export const Loan = ({setPageTrigger, togglePage}) => {
     const [token, setToken] =  useRecoilState(userToken)
     const [loan, setLoan] = useRecoilState(loanState)
 
@@ -35,18 +35,19 @@ export const Loan = () => {
             ?
                 <table>
                     <tr>
-                        <th>ID</th>
+                        {/* <th>ID</th> */}
                         <th>Nome</th>
                         <th>Descrissão</th>
                         <th>Condições</th>
                         <th>Provedor</th>
                         <th>Receptor</th>
                         <th>Situação da cautela</th>
+                        <th>Opções</th>
                     </tr>
                 {loan.map(item => {
                         return (
                             <tr>
-                                <th>{item.id}</th>
+                                {/* <th>{item.id}</th> */}
                                 <th>{item.name}</th>
                                 <th>{item.description}</th>
                                 <th>{item.conditions}</th>
@@ -55,7 +56,10 @@ export const Loan = () => {
                                 <th>{item.status}</th>
                                 <th>
                                     <button>Excluir</button>
-                                    <button>Editar</button>
+                                    <button onClick={() => {
+                                        setPageTrigger(item)
+                                        togglePage()
+                                        }}>Editar</button>
                                 </th>
                             </tr>
                         )

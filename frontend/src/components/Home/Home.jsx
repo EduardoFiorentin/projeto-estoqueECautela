@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { Storage } from "../Storage/Storage"
 import { Loan } from "../Loan/Loan"
 import { CreationLoanScreen, CreationStorageScreen } from "../CreationScreen/CreationScreen"
+import { loanEditState } from "../../atoms/loanEditState"
 
 export const Home = () => {
 
@@ -23,14 +24,15 @@ export const Home = () => {
     const [createPage, setCreatePage] = useState(0)
     const handleToggleCreatePage = () => createPage == 0 ? setCreatePage(1) : setCreatePage(0)
 
-    // guarda as informações do item a ser editado
-    const [pageTrigger, setPageTrigger] = useState({})
+    const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
+
+
  
     return (
         <div className="home">
-            {(create && Object.keys(pageTrigger) == 0) && (createPage ? <CreationStorageScreen togglePage={handleToggleCreate}/> : <CreationLoanScreen togglePage={handleToggleCreate}/>)}
-            {(create && Object.keys(pageTrigger) != 0) && (createPage ? null : <CreationLoanScreen togglePage={handleToggleCreate} itemData={pageTrigger} setItemData={setPageTrigger}/>)}
-
+            {(create || Object.keys(loaneditState) != 0) ? ((createPage ? <CreationStorageScreen togglePage={handleToggleCreate}/> : <CreationLoanScreen togglePage={handleToggleCreate}/>)) : null}
+            {/* {(create || Object.keys(loaneditState) != 0) && (createPage ? null : <CreationLoanScreen togglePage={handleToggleCreate}/>)} */}
+            {/*  */}
 
             <button onClick={() => {
                 handleToggleCreatePage()
@@ -41,9 +43,7 @@ export const Home = () => {
             <br /><br /><br />
 
             {page == 0 && <Storage togglePage={handleToggleCreate}/>} 
-            {page == 1 && <Loan togglePage={handleToggleCreate} setPageTrigger={setPageTrigger}/>}
-
-
+            {page == 1 && <Loan togglePage={handleToggleCreate}/>}
         </div>
     )
 }

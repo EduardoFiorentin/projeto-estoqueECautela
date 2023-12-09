@@ -10,6 +10,7 @@ const LOAN_STATUS = {
 const getAll = async (req, res) => {
     let items = await loanModel.getAll()
     if (items) {
+        items.map(item => item.statusId = item.status)
         items.map(item => item.status = LOAN_STATUS[item.status])
         res.status(200).json({message: ["Request successfull!"], status: 200, items})
     }

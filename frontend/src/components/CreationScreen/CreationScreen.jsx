@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import "./style.css"
 import api from "../../connection/api"
-import { useRecoilValue } from "recoil"
+import { useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil"
 import { userToken } from "../../atoms/userToken"
+import { loanEditState } from "../../atoms/loanEditState"
+import { loanState } from "../../atoms/loanState"
 
 const CATEGORY = {
     "1": "Vestuário Tático",
@@ -20,18 +22,34 @@ const CATEGORY = {
     "13": "Outros"
 }
 
-const CreationLoanScreen = ({togglePage, itemData, setItemData}) => {
+const CreationLoanScreen = ({togglePage}) => {
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [conditions, setConditions] = useState('')
     const [provider, setProvider] = useState('')
     const [receiver, setReceiver] = useState('')
-    const [status, setStatus] = useState('1')
-
-    const [initialValues, setInitialValues] = useState({})
+    const [status, setStatus] = useState('2')
 
     const [editMode, setEditMode] = useState(false)
+    const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
+    const [loan, setLoan] = useRecoilState(loanState)
+    
+    useEffect(() => {
+        if (Object.keys(loaneditState) != 0) {
+            setEditMode(true)
+            setName(loaneditState.name)
+            setDescription(loaneditState.description)
+            setConditions(loaneditState.conditions)
+            setProvider(loaneditState.provider)
+            setReceiver(loaneditState.receiver)
+            setStatus(loaneditState.status)
+            console.log("status: ", status, loaneditState)
+        }
+    }, [])
+
+    // const [initialValues, setInitialValues] = useState({})
+
 
     const token = useRecoilValue(userToken)
 
@@ -48,49 +66,39 @@ const CreationLoanScreen = ({togglePage, itemData, setItemData}) => {
         }
     }
 
+
+    //refatorar - usado em Loan e creationScreen
+    const getLoanData = () => {
+        api.get("/loan", {headers: {Authorization: token}})
+        .then(data => setLoan(data.data.items))
+        .catch(err => console.log(err.response.data))
+    }
+
     const handleUpdateObject = () => {
         let modObj = {}
         const actValues = {name, description, conditions, provider, receiver, status}
-        console.log(actValues)
-        Object.keys(actValues).map(key => {
-            if (initialValues[key] !== actValues[key]) modObj[key] = actValues[key]
-            console.log(2)
-            console.log(key, initialValues[key], actValues[key], initialValues[key] !== actValues[key])
-        })
+        // console.log(actValues)
+        Object.keys(actValues).map(key => {if (loaneditState[key] !== actValues[key]) modObj[key] = actValues[key]})
+
+        // atualizar db e exibição
+        api.put(`/loan/${loaneditState.id}`, modObj, {headers: {Authorization: token}})
+            .then(res =>{
+                console.log(res.data)
+                setLoanEditState({})
+                getLoanData()
+            })
+            .catch(res => console.log(res.response.data))
+
+       
 
         console.log(modObj)
     }
-
-    useEffect(() => {
-        if (itemData) {
-            setEditMode(true)
-            setName(itemData.name)
-            setDescription(itemData.description)
-            setConditions(itemData.conditions)
-            setProvider(itemData.provider)
-            setReceiver(itemData.receiver)
-            setStatus(itemData.status)
-            // togglePage()
-            console.log("item data")
-
-            setInitialValues({
-                name: itemData.name,
-                description: itemData.description, 
-                conditions: itemData.conditions, 
-                provider: itemData.provider, 
-                receiver: itemData.receiver, 
-                status: itemData.status
-            })
-        }
-
-        // console.log(initialValues)
-    }, [])
 
     return (
         <div className="creation__screen">
             <h2 className="creation__title">{editMode? "Modificar Cautela" : "Adicionar à cautela"}</h2>
             
-            {editMode ? <p>Item: {itemData.id}</p> : null}
+            {editMode ? <div>Item: <p>nome: {loaneditState.name}</p><p>id: {loaneditState.id}</p></div>: null}  
 
             <label htmlFor="" className="">Nome</label>
             <input type="text" value={name} onChange={event => setName(event.target.value)}/>
@@ -108,16 +116,13 @@ const CreationLoanScreen = ({togglePage, itemData, setItemData}) => {
             <input type="text"  value={receiver} onChange={event => setReceiver(event.target.value)}/>
 
             <label htmlFor="" className="">Status da cautela</label>
-            <select name="" id="" onChange={item => setStatus(item.target.value)}>
+            <select name="" id="" onChange={item => setStatus(item.target.value)} value={status}>
                 <option value="1">Não retirado</option>
                 <option value="2">Cautelado</option>
                 <option value="3">Descautelado</option>
             </select>
             <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
-            <button onClick={() => {
-                togglePage()
-                setItemData({}) 
-            }}>Fechar</button>
+            <button onClick={() => editMode ? setLoanEditState({}) : togglePage()}>Fechar</button>
         </div>
     )
 }

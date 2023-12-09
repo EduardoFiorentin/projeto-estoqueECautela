@@ -10,6 +10,7 @@ export const Storage = () => {
     const [token, setToken] =  useRecoilState(userToken)
     const [storage, setStorage] = useRecoilState(storageState)
 
+    // refatorar - usado em Storage e Loan
     const handleLogOut = () => {
         setToken('')
         localStorage.removeItem("system_token")

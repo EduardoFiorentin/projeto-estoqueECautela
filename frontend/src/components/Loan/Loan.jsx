@@ -4,17 +4,21 @@ import { LogIn } from "../Login/LogIn"
 import { loanState } from "../../atoms/loanState"
 import api from "../../connection/api"
 import { useEffect } from "react"
+import { loanEditState } from "../../atoms/loanEditState"
 
-export const Loan = ({setPageTrigger, togglePage}) => {
+export const Loan = () => {
     const [token, setToken] =  useRecoilState(userToken)
     const [loan, setLoan] = useRecoilState(loanState)
+    const [loaneditState, setloaneditState] = useRecoilState(loanEditState)
 
+    // refatorar - usado em Storage e Loan
     const handleLogOut = () => {
         setToken('')
         localStorage.removeItem("system_token")
         return <LogIn/>
     }
 
+    //refatorar - usado em Loan e creationScreen
     const getLoanData = () => {
         api.get("/loan", {headers: {Authorization: token}})
         .then(data => setLoan(data.data.items))
@@ -57,8 +61,7 @@ export const Loan = ({setPageTrigger, togglePage}) => {
                                 <th>
                                     <button>Excluir</button>
                                     <button onClick={() => {
-                                        setPageTrigger(item)
-                                        togglePage()
+                                        setloaneditState(item)
                                         }}>Editar</button>
                                 </th>
                             </tr>
@@ -66,7 +69,7 @@ export const Loan = ({setPageTrigger, togglePage}) => {
                     }) }
                 </table>
             : 
-            "Sem itens"
+            <p>Sem itens</p>
             
             }
             <br /><button onClick={handleLogOut}>LogOut</button>

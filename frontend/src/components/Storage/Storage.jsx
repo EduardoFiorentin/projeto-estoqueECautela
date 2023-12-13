@@ -4,11 +4,13 @@ import { LogIn } from "../Login/LogIn"
 import { storageState } from "../../atoms/storageState"
 import api from "../../connection/api"
 import { useEffect } from "react"
+import { storageEditState } from "../../atoms/storageEditState"
 
 export const Storage = () => {
 
     const [token, setToken] =  useRecoilState(userToken)
     const [storage, setStorage] = useRecoilState(storageState)
+    const [storageeditState, setStorageEditState] = useRecoilState(storageEditState)
 
     // refatorar - usado em Storage e Loan
     const handleLogOut = () => {
@@ -53,7 +55,9 @@ export const Storage = () => {
                                 <th>{item.category}</th>
                                 <th>
                                     <button>Excluir</button>
-                                    <button>Editar</button>
+                                    <button
+                                        onClick={() => setStorageEditState(item)}
+                                    >Editar</button>
                                 </th>
                             </tr>
                         )

@@ -8,6 +8,7 @@ import { Storage } from "../Storage/Storage"
 import { Loan } from "../Loan/Loan"
 import { CreationLoanScreen, CreationStorageScreen } from "../CreationScreen/CreationScreen"
 import { loanEditState } from "../../atoms/loanEditState"
+import { storageEditState } from "../../atoms/storageEditState"
 
 export const Home = () => {
 
@@ -25,14 +26,17 @@ export const Home = () => {
     const handleToggleCreatePage = () => createPage == 0 ? setCreatePage(1) : setCreatePage(0)
 
     const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
+    const [storageeditState, setStorageEditState] = useRecoilState(storageEditState)
 
 
  
     return (
         <div className="home">
-            {(create || Object.keys(loaneditState) != 0) ? ((createPage ? <CreationStorageScreen togglePage={handleToggleCreate}/> : <CreationLoanScreen togglePage={handleToggleCreate}/>)) : null}
+            {(create || Object.keys(loaneditState).length != 0) ? ((createPage === 0 ? <CreationLoanScreen togglePage={handleToggleCreate}/> : null)) : null}
+            {(create || Object.keys(storageeditState).length != 0) ? ((createPage === 1 ? <CreationStorageScreen togglePage={handleToggleCreate}/> : null)) : null}
             {/* {(create || Object.keys(loaneditState) != 0) && (createPage ? null : <CreationLoanScreen togglePage={handleToggleCreate}/>)} */}
             {/*  */}
+            {/* {Object.keys(storageeditState).length != 0 ? console.log('create: ', Object.keys(storageeditState)): null} */}
 
             <button onClick={() => {
                 handleToggleCreatePage()

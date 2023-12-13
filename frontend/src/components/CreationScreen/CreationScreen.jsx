@@ -5,6 +5,8 @@ import { useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil"
 import { userToken } from "../../atoms/userToken"
 import { loanEditState } from "../../atoms/loanEditState"
 import { loanState } from "../../atoms/loanState"
+import { storageEditState } from "../../atoms/storageEditState"
+import { storageState } from "../../atoms/storageState"
 
 const CATEGORY = {
     "1": "Vestuário Tático",
@@ -30,13 +32,15 @@ const CreationLoanScreen = ({togglePage}) => {
     const [provider, setProvider] = useState('')
     const [receiver, setReceiver] = useState('')
     const [status, setStatus] = useState('2')
+    
+    const token = useRecoilValue(userToken)
 
     const [editMode, setEditMode] = useState(false)
     const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
     const [loan, setLoan] = useRecoilState(loanState)
     
     useEffect(() => {
-        if (Object.keys(loaneditState) != 0) {
+        if (Object.keys(loaneditState).length != 0) {
             setEditMode(true)
             setName(loaneditState.name)
             setDescription(loaneditState.description)
@@ -51,7 +55,6 @@ const CreationLoanScreen = ({togglePage}) => {
     // const [initialValues, setInitialValues] = useState({})
 
 
-    const token = useRecoilValue(userToken)
 
     const handleCreateObject = () => {
         if (name && description && conditions && provider && receiver && status) {
@@ -135,6 +138,10 @@ const CreationStorageScreen = ({togglePage}) => {
 
     const token = useRecoilValue(userToken)
 
+    const [editMode, setEditMode] = useState(false)
+    const [storageeditState, setStorageEditState] = useRecoilState(storageEditState)
+    const [storage, setStorage] = useRecoilState(storageState)
+
     const handleCreateObject = () => {
         if (name && qtd && description && category) {
             setQtd(parseInt(qtd))
@@ -150,9 +157,43 @@ const CreationStorageScreen = ({togglePage}) => {
         }
     }
 
+    useEffect(() => {
+        if (Object.keys(storageeditState).length != 0) {
+            setEditMode(true)
+            setName(storageeditState.name)
+            setQtd(parseInt(storageeditState.qtd))
+            setDescription(storageeditState.description)
+            setCategory(storageeditState.storage)
+
+        }
+    }, [])
+
+    const getStorageData = () => {
+        api.get("/storage", {headers: {Authorization: token}})
+        .then(data => setLoan(data.data.items))
+        .catch(err => console.log(err.response.data))
+    }
+
+    const handleUpdateObject = () => {
+        let modObj = {} 
+        const actValues = {name, qtd, description, category}
+        Object.keys(actValues).map(key => {if (storageeditState[key] !== actValues[key]) modObj[key] = actValues[key]})
+        
+        api.put(`/storage/${storageeditState.id}`, modObj, {headers: {Authorization: token}})
+            .then(res =>{
+                console.log(res.data)
+                setStorageEditState({})
+                getStorageData()
+            })
+            .catch(res => console.log(res.response.data))
+
+            console.log(modObj)
+    }
+
     return (
         <div className="creation__screen">
-            <h2 className="creation__title">Adicionar ao estoque</h2>
+            <h2 className="creation__title">{editMode? "Modificar Estoque" : "Adicionar ao Estoque"}</h2>
+            {editMode ? <div>Item: <p>nome: {storageeditState.name}</p><p>id: {storageeditState.id}</p></div>: null}  
             
             <label htmlFor="" className="">Nome</label>
             <input type="text" value={name} onChange={event => setName(event.target.value)}/>
@@ -164,14 +205,14 @@ const CreationStorageScreen = ({togglePage}) => {
             <textarea name="" id="" cols="30" rows="10" value={description} onChange={event => setDescription(event.target.value)}></textarea>
 
             <label htmlFor="" className="">Categoria</label>
-            <select name="" id="" onChange={item => setCategory(item.target.value)}>
+            <select name="" id="" onChange={item => setCategory(item.target.value)} value={category}>
                 {
                     Object.keys(CATEGORY).map(key => <option value={key}>{CATEGORY[key]}</option>)
                 }
                
             </select>
-            <button onClick={handleCreateObject}>Criar</button>
-            <button onClick={togglePage}>Fechar</button>
+            <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
+            <button onClick={() => editMode ? setStorageEditState({}) : togglePage()}>Fechar</button>
         </div>
     )
 }

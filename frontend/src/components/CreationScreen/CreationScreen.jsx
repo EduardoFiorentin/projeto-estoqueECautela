@@ -119,13 +119,19 @@ const CreationLoanScreen = ({togglePage}) => {
             <input type="text"  value={receiver} onChange={event => setReceiver(event.target.value)}/>
 
             <label htmlFor="" className="">Status da cautela</label>
-            <select name="" id="" onChange={item => setStatus(item.target.value)} value={status}>
-                <option value="1">Não retirado</option>
-                <option value="2">Cautelado</option>
-                <option value="3">Descautelado</option>
+            {console.log("stt", status)}
+            <select name="" id="" onChange={item => setStatus(item.target.value)} value={status} defaultValue={status}>
+                <option value="Não retirado">Não retirado</option>
+                <option value="Cautelado">Cautelado</option>
+                <option value="Descautelado">Descautelado</option>
             </select>
             <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
             <button onClick={() => editMode ? setLoanEditState({}) : togglePage()}>Fechar</button>
+            <select name="" id="" defaultValue={"3"}>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
         </div>
     )
 }
@@ -163,7 +169,7 @@ const CreationStorageScreen = ({togglePage}) => {
             setName(storageeditState.name)
             setQtd(parseInt(storageeditState.qtd))
             setDescription(storageeditState.description)
-            setCategory(storageeditState.storage)
+            setCategory(storageeditState.category)
 
         }
     }, [])
@@ -205,9 +211,12 @@ const CreationStorageScreen = ({togglePage}) => {
             <textarea name="" id="" cols="30" rows="10" value={description} onChange={event => setDescription(event.target.value)}></textarea>
 
             <label htmlFor="" className="">Categoria</label>
-            <select name="" id="" onChange={item => setCategory(item.target.value)} value={category}>
+            {
+                console.log("ct", category)
+            }
+            <select name="" id="" onChange={item => setCategory(item.target.value)} value={category} defaultValue={category}>
                 {
-                    Object.keys(CATEGORY).map(key => <option value={key}>{CATEGORY[key]}</option>)
+                    Object.keys(CATEGORY).map(key => <option value={CATEGORY[key]}>{CATEGORY[key]}</option>)
                 }
                
             </select>

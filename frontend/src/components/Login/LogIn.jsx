@@ -3,6 +3,9 @@ import api from "../../connection/api"
 import { useRecoilState } from "recoil"
 import { userToken } from "../../atoms/userToken"
 import "./style.css"
+import { errorMessage } from "../../utils/ErrorHandling/errorMessage"
+import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
+
 export const LogIn = () => {
 
     const [seePass, setSeePass] = useState(false)
@@ -29,9 +32,22 @@ export const LogIn = () => {
             if (check) window.localStorage.setItem("system_token", 'Bearer ' + res.data.token)
         })
         .catch(err => {
+
+            // problema com a conexão 
+            // if (err.code == 'ERR_NETWORK') {
+            //     errorMessage("Falha na conexão! Verifique sua conexão com a internet e tente novamente.")
+            //     setLoading(false)
+            // }
+            errorHandler(err)
+            setLoading(false)
+            
+            console.log(err.message)
             console.log(err.response.data)
             setErr(err.response.data.message)
             setLoading(false)
+        
+            
+
         })
     }
 

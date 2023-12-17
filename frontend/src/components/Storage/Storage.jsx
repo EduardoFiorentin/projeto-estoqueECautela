@@ -22,6 +22,20 @@ export const Storage = () => {
     const getStorageData = () => {
         api.get("/storage", {headers: {Authorization: token}})
         .then(data => setStorage(data.data.items))
+        .catch(err => {
+            errorHandler(err)
+            console.log(err)
+        })
+    }
+
+    const handleDeleteItem = id => {
+        // verificação 
+
+        api.delete(`/storage/${id}`, {headers: {Authorization: token}})
+        .then(data => {
+            console.log(data.data)
+            getStorageData()
+        })
         .catch(err => console.log(err.response.data))
     }
 
@@ -54,12 +68,14 @@ export const Storage = () => {
                                 <th>{item.description}</th>
                                 <th>{item.category}</th>
                                 <th>
-                                    <button>Excluir</button>
+                                    <button
+                                        onClick={() => handleDeleteItem(item.id)}
+                                    >Excluir</button>
                                     <button
                                         onClick={() => setStorageEditState(item)}
                                     >Editar</button>
                                 </th>
-                            </tr>
+                            </tr>   
                         )
                     }) }
                 </table>

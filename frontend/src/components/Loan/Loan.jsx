@@ -5,6 +5,8 @@ import { loanState } from "../../atoms/loanState"
 import api from "../../connection/api"
 import { useEffect } from "react"
 import { loanEditState } from "../../atoms/loanEditState"
+import { formatData } from "../../utils/formatData"
+import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
 
 export const Loan = () => {
     const [token, setToken] =  useRecoilState(userToken)
@@ -22,7 +24,26 @@ export const Loan = () => {
     const getLoanData = () => {
         api.get("/loan", {headers: {Authorization: token}})
         .then(data => setLoan(data.data.items))
-        .catch(err => console.log(err.response.data))
+        .catch(err => {
+            errorHandler(err)
+            console.log(err)
+        })
+    }
+
+    const handleDeleteItem = id => {
+        // verificação 
+
+        console.log("Req exc")
+
+        api.delete(`/loan/${id}`, {headers: {Authorization: token}})
+        .then(data => {
+            console.log(data.data)
+            getLoanData()
+        })
+        .catch(err => {
+            errorHandler()
+            console.log("err", err)
+        })
     }
 
     useEffect(() => {
@@ -41,6 +62,7 @@ export const Loan = () => {
                     <tr>
                         {/* <th>ID</th> */}
                         <th>Nome</th>
+                        <th>Data</th>
                         <th>Descrissão</th>
                         <th>Condições</th>
                         <th>Provedor</th>
@@ -48,18 +70,22 @@ export const Loan = () => {
                         <th>Situação da cautela</th>
                         <th>Opções</th>
                     </tr>
+                {console.log(loan)}
                 {loan.map(item => {
                         return (
                             <tr>
                                 {/* <th>{item.id}</th> */}
                                 <th>{item.name}</th>
+                                <th>{formatData(item.loan_date)}</th>
                                 <th>{item.description}</th>
                                 <th>{item.conditions}</th>
                                 <th>{item.provider}</th>
                                 <th>{item.receiver}</th>
                                 <th>{item.status}</th>
                                 <th>
-                                    <button>Excluir</button>
+                                    <button
+                                        onClick={() => handleDeleteItem(item.id)}
+                                    >Excluir</button>
                                     <button onClick={() => {
                                         setloaneditState(item)
                                         }}>Editar</button>

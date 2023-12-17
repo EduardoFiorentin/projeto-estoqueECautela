@@ -8,6 +8,8 @@ import { loanState } from "../../atoms/loanState"
 import { storageEditState } from "../../atoms/storageEditState"
 import { storageState } from "../../atoms/storageState"
 
+import Swal from 'sweetalert2'
+
 const CATEGORY = {
     "1": "Vestuário Tático",
     "2": "Armamento e Munição",
@@ -24,6 +26,15 @@ const CATEGORY = {
     "13": "Outros"
 }
 
+const ENUM_LOAN_STATUS = {
+    "Não retirado": "1",
+    "Cautelado": "2",
+    "Descautelado": "3"
+}
+const ENUM_STORAGE_CATEGORY = {
+
+}
+
 const CreationLoanScreen = ({togglePage}) => {
 
     const [name, setName] = useState('')
@@ -34,7 +45,7 @@ const CreationLoanScreen = ({togglePage}) => {
     const [status, setStatus] = useState('2')
     
     const token = useRecoilValue(userToken)
-
+    
     const [editMode, setEditMode] = useState(false)
     const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
     const [loan, setLoan] = useRecoilState(loanState)
@@ -52,9 +63,28 @@ const CreationLoanScreen = ({togglePage}) => {
         }
     }, [])
 
-    // const [initialValues, setInitialValues] = useState({})
+    
+    const exitPage = () => editMode ? setLoanEditState({}) : togglePage()
+
+    // const errorMessage = message => {
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Erro!',
+    //         text: message,
+    //       })
+    // }
+
+    // const requestError = data => {    
+        
+    //     let message = ""
 
 
+    //     Swal.fire({
+    //         icon: 'error',
+    //         title: 'Erro!',
+    //         text: message,
+    //       })
+    // }
 
     const handleCreateObject = () => {
         if (name && description && conditions && provider && receiver && status) {
@@ -62,10 +92,14 @@ const CreationLoanScreen = ({togglePage}) => {
                 name, description, conditions, provider, receiver, status
             }
             api.post('/loan', obj, {headers: {Authorization: token}})
-            .then(res => console.log(res.data))
+            .then(res => {
+                console.log(res.data)
+                getLoanData() 
+                exitPage()
+            })
             .catch(res => console.log(res.response.data)) 
         } else {
-            console.log("Não há dados o suficiente")
+            errorMessage("Não há dados suficientes!")
         }
     }
 
@@ -73,7 +107,9 @@ const CreationLoanScreen = ({togglePage}) => {
     //refatorar - usado em Loan e creationScreen
     const getLoanData = () => {
         api.get("/loan", {headers: {Authorization: token}})
-        .then(data => setLoan(data.data.items))
+        .then(data => {
+            setLoan(data.data.items)
+        })
         .catch(err => console.log(err.response.data))
     }
 
@@ -89,13 +125,11 @@ const CreationLoanScreen = ({togglePage}) => {
                 console.log(res.data)
                 setLoanEditState({})
                 getLoanData()
+                exitPage()
             })
             .catch(res => console.log(res.response.data))
-
-       
-
-        console.log(modObj)
     }
+
 
     return (
         <div className="creation__screen">
@@ -119,14 +153,15 @@ const CreationLoanScreen = ({togglePage}) => {
             <input type="text"  value={receiver} onChange={event => setReceiver(event.target.value)}/>
 
             <label htmlFor="" className="">Status da cautela</label>
-            {console.log("stt", status)}
-            <select name="" id="" onChange={item => setStatus(item.target.value)} value={status} defaultValue={status}>
-                <option value="Não retirado">Não retirado</option>
-                <option value="Cautelado">Cautelado</option>
-                <option value="Descautelado">Descautelado</option>
+            {/* {console.log("stt", status, ENUM_LOAN_STATUS[status] == "3")} */}
+            <select name="" id="" onChange={item => setStatus(item.target.value)} defaultValue={ENUM_LOAN_STATUS[status]}>
+                <option value="1">Não retirado</option>
+                <option value="2">Cautelado</option>
+                <option value="3">Descautelado</option>
             </select>
             <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
-            <button onClick={() => editMode ? setLoanEditState({}) : togglePage()}>Fechar</button>
+            <button onClick={exitPage}>Fechar</button>
+            <button onClick={() => {}}>Ativar mensagem erro</button>
             <select name="" id="" defaultValue={"3"}>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -135,34 +170,23 @@ const CreationLoanScreen = ({togglePage}) => {
         </div>
     )
 }
+
+
+
 const CreationStorageScreen = ({togglePage}) => {
 
     const [name, setName] = useState('')
     const [qtd, setQtd] = useState(0)
     const [description, setDescription] = useState('')
     const [category, setCategory] = useState('1')
-
+    
     const token = useRecoilValue(userToken)
-
+    
+    
     const [editMode, setEditMode] = useState(false)
     const [storageeditState, setStorageEditState] = useRecoilState(storageEditState)
     const [storage, setStorage] = useRecoilState(storageState)
-
-    const handleCreateObject = () => {
-        if (name && qtd && description && category) {
-            setQtd(parseInt(qtd))
-            // console.log(qtd)
-            const obj = {
-                name, qtd, description, category
-            }
-            api.post('/storage', obj, {headers: {Authorization: token}})
-            .then(res => console.log(res.data))
-            .catch(res => console.log(res.response.data)) 
-        } else {
-            console.log("Não há dados o suficiente")
-        }
-    }
-
+    
     useEffect(() => {
         if (Object.keys(storageeditState).length != 0) {
             setEditMode(true)
@@ -173,10 +197,40 @@ const CreationStorageScreen = ({togglePage}) => {
 
         }
     }, [])
+    
+    const exitPage = () => editMode ? setStorageEditState({}) : togglePage() 
+
+    const handleCreateObject = () => {
+        if (name && qtd && description && category) {
+            setQtd(parseInt(qtd))
+            // console.log(qtd)
+            const obj = {
+                name, qtd, description, category
+            }
+
+        console.log(obj.category)
+
+
+        // refatorar - ta cachorro 
+        if (obj.qtd != undefined) obj.qtd = parseInt(obj.qtd)   
+
+            api.post('/storage', obj, {headers: {Authorization: token}})
+            .then(res =>{
+                console.log(res.data)
+                getStorageData()
+                exitPage() 
+            })
+            .catch(res => console.log(res.response.data)) 
+        } else {
+            console.log("Não há dados o suficiente")
+        }
+    }
+
+
 
     const getStorageData = () => {
         api.get("/storage", {headers: {Authorization: token}})
-        .then(data => setLoan(data.data.items))
+        .then(data => setStorage(data.data.items))
         .catch(err => console.log(err.response.data))
     }
 
@@ -185,15 +239,19 @@ const CreationStorageScreen = ({togglePage}) => {
         const actValues = {name, qtd, description, category}
         Object.keys(actValues).map(key => {if (storageeditState[key] !== actValues[key]) modObj[key] = actValues[key]})
         
+
+        // refatorar - ta cachorro 
+        if (modObj.qtd != undefined) modObj.qtd = parseInt(modObj.qtd)
+
         api.put(`/storage/${storageeditState.id}`, modObj, {headers: {Authorization: token}})
             .then(res =>{
                 console.log(res.data)
                 setStorageEditState({})
                 getStorageData()
+                exitPage()
             })
             .catch(res => console.log(res.response.data))
 
-            console.log(modObj)
     }
 
     return (
@@ -216,12 +274,12 @@ const CreationStorageScreen = ({togglePage}) => {
             }
             <select name="" id="" onChange={item => setCategory(item.target.value)} value={category} defaultValue={category}>
                 {
-                    Object.keys(CATEGORY).map(key => <option value={CATEGORY[key]}>{CATEGORY[key]}</option>)
+                    Object.keys(CATEGORY).map(key => <option value={key}>{CATEGORY[key]}</option>)
                 }
                
             </select>
             <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
-            <button onClick={() => editMode ? setStorageEditState({}) : togglePage()}>Fechar</button>
+            <button onClick={exitPage}>Fechar</button>
         </div>
     )
 }

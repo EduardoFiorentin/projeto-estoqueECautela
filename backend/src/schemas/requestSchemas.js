@@ -175,7 +175,7 @@ const CREATE_STORAGE = {
     },
     category: {
         type: 'string',
-        max: 1,
+        max: 2,
         min: 1, 
         required: true,
         values: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]

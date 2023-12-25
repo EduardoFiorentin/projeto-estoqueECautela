@@ -7,6 +7,7 @@ import { useEffect } from "react"
 import { loanEditState } from "../../atoms/loanEditState"
 import { formatData } from "../../utils/formatData"
 import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
+import { sucessHandler } from "../../utils/SucessHandling/sucessHandler"
 
 export const Loan = () => {
     const [token, setToken] =  useRecoilState(userToken)
@@ -24,10 +25,7 @@ export const Loan = () => {
     const getLoanData = () => {
         api.get("/loan", {headers: {Authorization: token}})
         .then(data => setLoan(data.data.items))
-        .catch(err => {
-            errorHandler(err)
-            console.log(err)
-        })
+        .catch(err => errorHandler(err))
     }
 
     const handleDeleteItem = id => {
@@ -39,11 +37,9 @@ export const Loan = () => {
         .then(data => {
             console.log(data.data)
             getLoanData()
+            sucessHandler(data)
         })
-        .catch(err => {
-            errorHandler()
-            console.log("err", err)
-        })
+        .catch(err => errorHandler(err))
     }
 
     useEffect(() => {

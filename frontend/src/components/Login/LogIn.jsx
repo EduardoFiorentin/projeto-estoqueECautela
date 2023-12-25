@@ -69,7 +69,7 @@ export const LogIn = () => {
 
             <button onClick={() => handleToggleSeePass()} className="log__password-button">{seePass ? "Esconder senha":"Ver senha" }</button><br/> <br/>
             {
-                err.map(err => <p className="log__error-message">{err}</p>)
+                // err.map(err => <p className="log__error-message">{err}</p>)
             }
             <input type="checkbox" name="check" id="check" checked={check} onClick={() => setCheck(!check)}/>
             <label htmlFor="check" className="">Salvar LogIn</label><br />

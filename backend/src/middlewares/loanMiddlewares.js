@@ -8,7 +8,7 @@ const createMiddleware = (req, res, next) => {
     next()
 }
 const updateMiddleware = (req, res, next) => {
-    if (Object.keys(req.body).length == 0) res.status(400).json({status: 400, message: "No fields have been modified!"})
+    if (Object.keys(req.body).length == 0) return res.status(400).json({status: 400, message: "No fields have been modified!"})
     
     const validUpdateFields = ["name", "description", "conditions", "provider", "receiver", "status"]
     const noValidFields = validateNameFields(req.body, validUpdateFields)

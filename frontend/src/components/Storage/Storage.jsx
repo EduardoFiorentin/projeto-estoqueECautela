@@ -5,6 +5,8 @@ import { storageState } from "../../atoms/storageState"
 import api from "../../connection/api"
 import { useEffect } from "react"
 import { storageEditState } from "../../atoms/storageEditState"
+import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
+import { sucessHandler } from "../../utils/SucessHandling/sucessHandler"
 
 export const Storage = () => {
 
@@ -22,10 +24,7 @@ export const Storage = () => {
     const getStorageData = () => {
         api.get("/storage", {headers: {Authorization: token}})
         .then(data => setStorage(data.data.items))
-        .catch(err => {
-            errorHandler(err)
-            console.log(err)
-        })
+        .catch(err => errorHandler(err))
     }
 
     const handleDeleteItem = id => {
@@ -33,10 +32,11 @@ export const Storage = () => {
 
         api.delete(`/storage/${id}`, {headers: {Authorization: token}})
         .then(data => {
-            console.log(data.data)
+            console.log(data.data.message)
             getStorageData()
+            sucessHandler(data)
         })
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandler(err))
     }
 
     useEffect(() => {

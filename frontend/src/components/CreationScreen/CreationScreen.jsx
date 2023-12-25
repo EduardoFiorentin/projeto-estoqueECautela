@@ -9,6 +9,9 @@ import { storageEditState } from "../../atoms/storageEditState"
 import { storageState } from "../../atoms/storageState"
 
 import Swal from 'sweetalert2'
+import { errorMessage } from "../../utils/ErrorHandling/errorMessage"
+import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
+import { sucessHandler } from "../../utils/SucessHandling/sucessHandler"
 
 const CATEGORY = {
     "1": "Vestuário Tático",
@@ -66,26 +69,6 @@ const CreationLoanScreen = ({togglePage}) => {
     
     const exitPage = () => editMode ? setLoanEditState({}) : togglePage()
 
-    // const errorMessage = message => {
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Erro!',
-    //         text: message,
-    //       })
-    // }
-
-    // const requestError = data => {    
-        
-    //     let message = ""
-
-
-    //     Swal.fire({
-    //         icon: 'error',
-    //         title: 'Erro!',
-    //         text: message,
-    //       })
-    // }
-
     const handleCreateObject = () => {
         if (name && description && conditions && provider && receiver && status) {
             const obj = {
@@ -96,8 +79,9 @@ const CreationLoanScreen = ({togglePage}) => {
                 console.log(res.data)
                 getLoanData() 
                 exitPage()
+                sucessHandler(res)
             })
-            .catch(res => console.log(res.response.data)) 
+            .catch(err => errorHandler(err)) 
         } else {
             errorMessage("Não há dados suficientes!")
         }
@@ -110,7 +94,7 @@ const CreationLoanScreen = ({togglePage}) => {
         .then(data => {
             setLoan(data.data.items)
         })
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandler(err))
     }
 
     const handleUpdateObject = () => {
@@ -126,8 +110,9 @@ const CreationLoanScreen = ({togglePage}) => {
                 setLoanEditState({})
                 getLoanData()
                 exitPage()
+                sucessHandler(res)
             })
-            .catch(res => console.log(res.response.data))
+            .catch(err => errorHandler(err))
     }
 
 
@@ -219,10 +204,11 @@ const CreationStorageScreen = ({togglePage}) => {
                 console.log(res.data)
                 getStorageData()
                 exitPage() 
+                sucessHandler(res)
             })
-            .catch(res => console.log(res.response.data)) 
+            .catch(err => errorHandler(err)) 
         } else {
-            console.log("Não há dados o suficiente")
+            errorMessage("Não há dados o suficiente")
         }
     }
 
@@ -231,7 +217,7 @@ const CreationStorageScreen = ({togglePage}) => {
     const getStorageData = () => {
         api.get("/storage", {headers: {Authorization: token}})
         .then(data => setStorage(data.data.items))
-        .catch(err => console.log(err.response.data))
+        .catch(err => errorHandler(err))
     }
 
     const handleUpdateObject = () => {
@@ -249,8 +235,9 @@ const CreationStorageScreen = ({togglePage}) => {
                 setStorageEditState({})
                 getStorageData()
                 exitPage()
+                sucessHandler(res)
             })
-            .catch(res => console.log(res.response.data))
+            .catch(err => errorHandler(err))
 
     }
 

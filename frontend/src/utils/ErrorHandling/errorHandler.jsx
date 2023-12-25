@@ -3,11 +3,14 @@ import { errorMessage } from "./errorMessage"
 export const errorHandler = err => {
     // erro de conexão
     if (err.code == 'ERR_NETWORK') {
-        errorMessage("Falha na conexão! Verifique sua conexão com a internet e tente novamente.")
+        return errorMessage("Falha na conexão! Verifique sua conexão com a internet e tente novamente.")
     }
-    // erro de permissão 
+
+
+    // erro de permissão ou dados da requisição incorretos  
     else if (err.code == 'ERR_BAD_REQUEST') {
-        errorMessage(err.response.data.message)
+        // console.log("Chamada mensagem")
+        return errorMessage(err.response.data.message)
     }
 
 

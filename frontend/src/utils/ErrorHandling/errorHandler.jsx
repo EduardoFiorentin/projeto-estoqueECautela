@@ -12,6 +12,4 @@ export const errorHandler = err => {
         // console.log("Chamada mensagem")
         return errorMessage(err.response.data.message)
     }
-
-
 }

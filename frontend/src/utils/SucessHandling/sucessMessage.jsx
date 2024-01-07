@@ -1,7 +1,5 @@
 import Swal from "sweetalert2"
 
-const style = "style={}"
-
 export const sucessMessage = message => {
     return ( 
         Swal.fire({

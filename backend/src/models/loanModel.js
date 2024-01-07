@@ -1,8 +1,9 @@
 const connection = require('../models/connection')
 const generateUpdateSQLLoan = require('../utils/generateUpdateSQLLoan')
 
-
 const getAll = async () => {
+    // testConnection(connection)
+    
     const query = 'SELECT * FROM loan'
     const items = await connection.execute(query)
     return items[0]

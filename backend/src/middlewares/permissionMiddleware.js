@@ -8,7 +8,7 @@ const access = (levelRequired) => {
         const authHeader = req.headers['authorization']
         const token = authHeader && authHeader.split(' ')[1]
 
-        if (!token) return res.status(401).json({message: "Access denied! An access token is required.", status: 401})
+        if (!token) return res.status(401).json({message: "Acesso negado! Um token de acesso é necessário.", status: 401})
         const secret = process.env.SECRET
         
         try {
@@ -23,11 +23,11 @@ const access = (levelRequired) => {
                 
             } else {
                 
-                return res.status(401).json({message: "Access denied! You're not allowed to be here.", status: 401})
+                return res.status(401).json({message: "Acesso negado! Você não tem permissão para estar aqui.", status: 401})
             }
 
         } catch (err) {
-            return res.status(401).json({message: "Access denied! Invalid token.", status: 401})
+            return res.status(401).json({message: "Acesso negado! Token inválido.", status: 401})
         }
 
         

@@ -34,9 +34,6 @@ const validate = (data, schema) => {
                 if (!schema[key].values.includes(data[key])) errors.push(`${key} field must have one of the following values: ${schema[key].values.join(" ; ")}`)
             }
         }
-
-
-        
     })
 
     console.log("validate.js: Erros: ", errors)

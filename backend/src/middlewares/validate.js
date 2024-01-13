@@ -21,21 +21,21 @@ const validate = (data, schema) => {
         
         // required
         // console.log(key, Object.hasOwn(data, key))
-        if (schema[key].required && !Object.hasOwn(data, key)) errors.push(`${key} field is required!`)
+        if (schema[key].required && !Object.hasOwn(data, key)) errors.push(`Campo '${key}' é obrigatório!`)
         else if (Object.hasOwn(data, key)){
     
             // type
-            if (typeof data[key] != schema[key].type) errors.push(`${key} field must be of type '${schema[key].type}', not '${typeof data[key]}'`)
+            if (typeof data[key] != schema[key].type) errors.push(`Campo '${key}' deve ser do tipo '${schema[key].type}', e não '${typeof data[key]}'`)
             
             // min and max
             if (typeof schema[key].type == 'string' && typeof data[key] == 'string') {
-                if (!!schema[key].max && data[key].length > schema[key].max) errors.push(`${key} field must have a maximum ${schema[key].max} characters!`)
-                if (!!schema[key].min && data[key].length < schema[key].min) errors.push(`${key} field must have at least ${schema[key].min} characters!`)
+                if (!!schema[key].max && data[key].length > schema[key].max) errors.push(`Campo '${key}' deve ter no maximo ${schema[key].max} caracteres!`)
+                if (!!schema[key].min && data[key].length < schema[key].min) errors.push(`Campo '${key}' deve ter pelo menos ${schema[key].min} caracteres!`)
             }
 
             // values
             if (!!schema[key].values) {
-                if (!schema[key].values.includes(data[key])) errors.push(`${key} field must have one of the following values: ${schema[key].values.join(" ; ")}`)
+                if (!schema[key].values.includes(data[key])) errors.push(`Campo '${key}' deve ter um dos seguintes valores: ${schema[key].values.join(" ; ")}`)
             }
         }
 
@@ -49,5 +49,3 @@ const validate = (data, schema) => {
 } 
 
 module.exports = validate
-
-// validate(mockLogin, schemas.POST_REGISTER)

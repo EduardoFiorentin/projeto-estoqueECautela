@@ -7,16 +7,4 @@ const validateNameFields = (obj, names) => {
     return invalidFields
 }
 
-// const obj = {
-//     "abc":"fiore",
-//     "email":"fiore@assalto.com",
-//     "pass":"fiore",
-//     "level": "2",
-//     "admin": false
-// }
-
-// const names = ["login", "email", "pass", "level", "admin"]
-
-// console.log(validateNameFields(obj, names))
-
 module.exports = validateNameFields

@@ -9,7 +9,6 @@ export const errorHandler = err => {
 
     // erro de permissão ou dados da requisição incorretos  
     else if (err.code == 'ERR_BAD_REQUEST') {
-        // console.log("Chamada mensagem")
         return errorMessage(err.response.data.message)
     }
 }

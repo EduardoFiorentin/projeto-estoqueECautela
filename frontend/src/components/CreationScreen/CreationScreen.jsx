@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react"
-import "./style.css"
 import api from "../../connection/api"
-import { useRecoilSnapshot, useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil"
 import { userToken } from "../../atoms/userToken"
 import { loanEditState } from "../../atoms/loanEditState"
 import { loanState } from "../../atoms/loanState"
 import { storageEditState } from "../../atoms/storageEditState"
 import { storageState } from "../../atoms/storageState"
-
-import Swal from 'sweetalert2'
 import { errorMessage } from "../../utils/ErrorHandling/errorMessage"
 import { errorHandler } from "../../utils/ErrorHandling/errorHandler"
 import { sucessHandler } from "../../utils/SucessHandling/sucessHandler"
+
+import '../../assets/style/creationScreen.sass'
 
 const CATEGORY = {
     "1": "Vestuário Tático",
@@ -100,7 +99,6 @@ const CreationLoanScreen = ({togglePage}) => {
     const handleUpdateObject = () => {
         let modObj = {}
         const actValues = {name, description, conditions, provider, receiver, status}
-        // console.log(actValues)
         Object.keys(actValues).map(key => {if (loaneditState[key] !== actValues[key]) modObj[key] = actValues[key]})
 
         // atualizar db e exibição
@@ -138,7 +136,6 @@ const CreationLoanScreen = ({togglePage}) => {
             <input type="text"  value={receiver} onChange={event => setReceiver(event.target.value)}/>
 
             <label htmlFor="" className="">Status da cautela</label>
-            {/* {console.log("stt", status, ENUM_LOAN_STATUS[status] == "3")} */}
             <select name="" id="" onChange={item => setStatus(item.target.value)} defaultValue={ENUM_LOAN_STATUS[status]}>
                 <option value="1">Não retirado</option>
                 <option value="2">Cautelado</option>
@@ -146,12 +143,6 @@ const CreationLoanScreen = ({togglePage}) => {
             </select>
             <button onClick={() => editMode ? handleUpdateObject() : handleCreateObject()}>Criar</button>
             <button onClick={exitPage}>Fechar</button>
-            <button onClick={() => {}}>Ativar mensagem erro</button>
-            <select name="" id="" defaultValue={"3"}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
         </div>
     )
 }
@@ -188,13 +179,9 @@ const CreationStorageScreen = ({togglePage}) => {
     const handleCreateObject = () => {
         if (name && qtd && description && category) {
             setQtd(parseInt(qtd))
-            // console.log(qtd)
             const obj = {
                 name, qtd, description, category
             }
-
-        console.log(obj.category)
-
 
         // refatorar - ta cachorro 
         if (obj.qtd != undefined) obj.qtd = parseInt(obj.qtd)   
@@ -256,9 +243,6 @@ const CreationStorageScreen = ({togglePage}) => {
             <textarea name="" id="" cols="30" rows="10" value={description} onChange={event => setDescription(event.target.value)}></textarea>
 
             <label htmlFor="" className="">Categoria</label>
-            {
-                console.log("ct", category)
-            }
             <select name="" id="" onChange={item => setCategory(item.target.value)} value={category} defaultValue={category}>
                 {
                     Object.keys(CATEGORY).map(key => <option value={key}>{CATEGORY[key]}</option>)

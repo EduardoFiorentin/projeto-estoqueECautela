@@ -11,16 +11,8 @@ const mockLogin = {
 const validate = (data, schema) => {
     errors = []
 
-    console.log('data: ', data)
-    console.log('schema: ', schema)
-
-    // data[key] - valor passado no body
-    // schema[key] - regras para esse valor 
-
     Object.keys(schema).forEach(key => {
-        
-        // required
-        // console.log(key, Object.hasOwn(data, key))
+
         if (schema[key].required && !Object.hasOwn(data, key)) errors.push(`Campo '${key}' é obrigatório!`)
         else if (Object.hasOwn(data, key)){
     
@@ -42,8 +34,6 @@ const validate = (data, schema) => {
 
         
     })
-
-    console.log("validate.js: Erros: ", errors)
     return errors
 
 } 

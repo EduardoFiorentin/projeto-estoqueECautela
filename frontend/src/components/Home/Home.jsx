@@ -1,14 +1,14 @@
 import { useRecoilState } from "recoil"
-import { userToken } from "../../atoms/userToken"
-import { LogIn } from "../Login/LogIn"
-import { storageState } from "../../atoms/storageState"
-import api from "../../connection/api"
 import { useEffect, useState } from "react"
 import { Storage } from "../Storage/Storage"
 import { Loan } from "../Loan/Loan"
 import { CreationLoanScreen, CreationStorageScreen } from "../CreationScreen/CreationScreen"
 import { loanEditState } from "../../atoms/loanEditState"
 import { storageEditState } from "../../atoms/storageEditState"
+
+import '../../assets/style/table.sass'
+import '../../assets/style/home.sass'
+
 
 export const Home = () => {
 
@@ -28,23 +28,33 @@ export const Home = () => {
     const [loaneditState, setLoanEditState] = useRecoilState(loanEditState)
     const [storageeditState, setStorageEditState] = useRecoilState(storageEditState)
 
+    const [userInfo, setUserInfo] = useState(JSON.parse(window.localStorage.getItem('user_info')))
 
+    const capitalizeFirstLetter = str => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
  
     return (
         <div className="home">
+
+            <div className="user">
+                <div className="user__info">
+                    <div className="user__img">{userInfo.user[0].toUpperCase()}</div>
+                    <p className="user__name">{capitalizeFirstLetter(userInfo.user)}</p>
+                </div>
+            </div>
+
+            <h1 className="home__title">{page === 0 ? "Estoque":"Cautela"}</h1>
             {(create || Object.keys(loaneditState).length != 0) ? ((createPage === 0 ? <CreationLoanScreen togglePage={handleToggleCreate}/> : null)) : null}
             {(create || Object.keys(storageeditState).length != 0) ? ((createPage === 1 ? <CreationStorageScreen togglePage={handleToggleCreate}/> : null)) : null}
-            {/* {(create || Object.keys(loaneditState) != 0) && (createPage ? null : <CreationLoanScreen togglePage={handleToggleCreate}/>)} */}
-            {/*  */}
-            {/* {Object.keys(storageeditState).length != 0 ? console.log('create: ', Object.keys(storageeditState)): null} */}
 
-            <button onClick={() => {
-                handleToggleCreatePage()
-                handleTogglePage()
-            }}>{page == 0 ? "Ficha de Cautela" : "Ficha de Estoque"}</button> <br /> <br />
-            <button onClick={handleToggleCreate}>Criar novo item</button>
-
-            <br /><br /><br />
+            <div className="home__buttons">
+                <button onClick={() => {
+                    handleToggleCreatePage()
+                    handleTogglePage()
+                }} className="home__button">{page == 0 ? "Ficha de Cautela" : "Ficha de Estoque"}</button>
+                <button onClick={handleToggleCreate} className="home__button">Criar novo item</button>
+            </div>
 
             {page == 0 && <Storage togglePage={handleToggleCreate}/>} 
             {page == 1 && <Loan togglePage={handleToggleCreate}/>}

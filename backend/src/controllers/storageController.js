@@ -21,7 +21,6 @@ const CATEGORY = {
 const getAll = async (req, res) => {
     try {
         let items = await storageModel.getAll()
-        console.log(items)
         // trocar categoria
         if (items) {
             items.map(item => item.category = CATEGORY[item.category])
@@ -81,11 +80,9 @@ const deleteItem = async (req, res) => {
         const id = req.params.id
     
         const item = await storageModel.getById(id)
-        // console.log(item, item.length)
         if (item.length == 0) return res.status(404).json({message: ["Id fornecido não existe!"], status: 404})
     
         const deleteItem = await storageModel.deleteItem(id)
-        // // console.log("items:", items)
         if (deleteItem) return res.status(200).json({message: ["Item deletado com sucesso."], status: 200})
         else return res.status(500).json({message: ["Ocorreu um erro em nosso servidor! Tente novamente mais tarde!"], status: 500})
 

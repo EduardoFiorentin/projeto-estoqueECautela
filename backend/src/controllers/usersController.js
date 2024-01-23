@@ -12,14 +12,18 @@ const loginVerify = async (req, res) => {
     
         if (logUser.length === 0) return res.status(400).json({message: ["Usuario não existe!"], status:400})
     
-        // console.log("log user: ", logUser)
         const checkPass = await bcrypt.compare(user.pass, logUser[0].pass)
     
         if (checkPass) {
             const secret = process.env.SECRET
             const data = {"id": logUser[0].id, "level": logUser[0].level, "admin": logUser[0].admin}
             const token = jwt.sign(data, secret)
-            return res.status(200).json({message: ["LogIn efetuado com sucesso!"], status:200, token: token})
+            const userInfo = {
+                "user": logUser[0].login,
+                "level": logUser[0].level,
+                "admin": logUser[0].admin
+            }
+            return res.status(200).json({message: ["LogIn efetuado com sucesso!"], status:200, token: token, userInfo})
         } 
         else return res.status(400).json({message: ["Senha incorreta!"], status:400})
     } catch (err) {
